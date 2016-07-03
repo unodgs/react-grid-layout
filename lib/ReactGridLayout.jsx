@@ -367,7 +367,6 @@ export default class ReactGridLayout extends React.Component {
     // Parse 'static'. Any properties defined directly on the grid item will take precedence.
     const draggable = Boolean(!l.static && isDraggable && (l.isDraggable || l.isDraggable == null));
     const resizable = Boolean(!l.static && isResizable && (l.isResizable || l.isResizable == null));
-
     return (
       <GridItem
         containerWidth={width}
@@ -398,6 +397,7 @@ export default class ReactGridLayout extends React.Component {
         maxH={l.maxH}
         maxW={l.maxW}
         static={l.static}
+        fixed={child.props.fixed}
         >
         {child}
       </GridItem>

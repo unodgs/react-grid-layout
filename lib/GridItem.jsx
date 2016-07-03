@@ -81,7 +81,8 @@ export default class GridItem extends React.Component {
     // Selector for draggable handle
     handle: PropTypes.string,
     // Selector for draggable cancel (see react-draggable)
-    cancel: PropTypes.string
+    cancel: PropTypes.string,
+    fixed: PropTypes.boolean
   };
 
   static defaultProps = {
@@ -200,17 +201,17 @@ export default class GridItem extends React.Component {
    * @param  {Object} pos Position object with width, height, left, top.
    * @return {Object}     Style object.
    */
-  createStyle(pos: Position): {[key: string]: ?string} {
+  createStyle(pos: Position, fixed: boolean): {[key: string]: ?string} {
     const {usePercentages, containerWidth, useCSSTransforms} = this.props;
 
     let style;
     // CSS Transforms support (default)
     if (useCSSTransforms) {
-      style = setTransform(pos);
+      style = setTransform(pos, fixed);
     }
     // top,left (slow)
     else {
-      style = setTopLeft(pos);
+      style = setTopLeft(pos, fixed);
 
       // This is used for server rendering.
       if (usePercentages) {
@@ -349,7 +350,7 @@ export default class GridItem extends React.Component {
   }
 
   render(): React.Element {
-    const {x, y, w, h, isDraggable, isResizable, useCSSTransforms} = this.props;
+    const {x, y, w, h, isDraggable, isResizable, useCSSTransforms, fixed} = this.props;
 
     const pos = this.calcPosition(x, y, w, h, this.state);
     const child = React.Children.only(this.props.children);
@@ -368,7 +369,7 @@ export default class GridItem extends React.Component {
         useCSSTransforms ? 'cssTransforms' : ''
       ].join(' '),
       // We can set the width and height on the child, but unfortunately we can't set the position.
-      style: {...this.props.style, ...child.props.style, ...this.createStyle(pos)}
+      style: {...this.props.style, ...child.props.style, ...this.createStyle(pos, fixed)}
     });
 
     // Resizable support. This is usually on but the user can toggle it off.
